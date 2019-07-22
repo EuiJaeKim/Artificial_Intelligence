@@ -47,7 +47,7 @@ print("acc : ",acc)
 print("loss : ",loss)
 
 y_predict = model.predict(x_test)
-print(y_predict)
+print('y_predict : ',y_predict)
 
 #RMSE 구하기
 from sklearn.metrics import mean_squared_error
