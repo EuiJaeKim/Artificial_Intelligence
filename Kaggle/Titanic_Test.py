@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 sns.set()
 train = pd.read_csv('./Artificial_Intelligence/Kaggle/Data/Titanic_train.csv',encoding='cp949') # 안읽어지면 인코딩 방식 확인할 것
 test = pd.read_csv('./Artificial_Intelligence/Kaggle/Data/Titanic_test.csv',encoding='cp949') 
+YY = pd.read_csv('./Artificial_Intelligence/Kaggle/Data/gender_submission.csv',encoding='cp949')
 
 def bar_chart(feature):
     survived = train[train['Survived']==1][feature].value_counts()
@@ -87,15 +88,15 @@ train = train.drop(['PassengerId'], axis=1)
 X = train.drop('Survived', axis=1)
 Y = train['Survived']
 X_Test = test.drop('PassengerId', axis=1)
-
+Y_Test = YY.drop('PassengerId', axis=1)
 # ----------------------------------------
 
 #1. 데이터 
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-x_test,x_train,y_test,y_train = train_test_split(X,Y,test_size=0.4,random_state=1) # 6 : 4로 나눔
-x_test,x_validation,y_test,y_validation = train_test_split(x_test,y_test,test_size=0.5,random_state=1) # 4를 5:5로 나눔
+x_validation,x_train,y_validation,y_train = train_test_split(X,Y,test_size=0.4,random_state=1) # 6 : 4로 나눔
+# x_test,x_validation,y_test,y_validation = train_test_split(x_test,y_test,test_size=0.5,random_state=1) # 4를 5:5로 나눔
 
 #2. 모델 구성
 from keras.layers import Dense, Dropout
@@ -103,37 +104,54 @@ from keras.activations import softmax
 from keras.models import Sequential
 model = Sequential()
 
-# model.add(Dense(20,input_dim = 1, activation = 'relu'))
-model.add(Dense(20,input_shape =(X.shape[1],), activation = 'relu'))
-model.add(Dense(5, activation = 'relu'))
-model.add(Dense(20, activation = 'relu'))
-model.add(Dense(20, activation = 'relu'))
-model.add(Dropout(0.25))
-model.add(Dense(10, activation = 'relu'))
-model.add(Dropout(0.25))
+# model.add(Dropout(0.25))
+model.add(Dense(400,input_shape =(X.shape[1],), activation = 'relu'))
+model.add(Dense(384, activation = 'relu'))
+model.add(Dense(397, activation = 'relu'))
+model.add(Dense(411, activation = 'relu'))
+model.add(Dense(313, activation = 'relu'))
+model.add(Dense(148, activation = 'relu'))
 model.add(Dense(1, activation = 'relu'))
 
 #3. 훈련
 model.compile(loss='mse',optimizer='adam',metrics=['accuracy'])
-model.fit(x_train,y_train,epochs=100,batch_size=7,validation_data=(x_validation,y_validation))
+model.fit(x_train,y_train,epochs=150,batch_size=7,validation_data=(x_validation,y_validation))
 
 #4. 평가 예측
-loss, acc = model.evaluate(x_test,y_test,batch_size=1)
+loss, acc = model.evaluate(X_Test,Y_Test,batch_size=1)
 print("acc : ",acc)
 print("loss : ",loss)
 
-# y_predict = model.predict(x_test)
+Y_predict = model.predict(X_Test)
 # print('y_predict : ',y_predict)
 
-# test_data = test.drop("PassengerId", axis=1).copy()
-# prediction = clf.predict(test_data)
+#RMSE 구하기
+from sklearn.metrics import mean_squared_error
+def RMSE(y_test,y_predict):
+    return np.sqrt(mean_squared_error(Y_Test,Y_predict))
+print("RMSE : ",RMSE(Y_Test,Y_predict)) # y_predict는 x_test로 만들어짐. 그래서 y_test를 해줘야 비교를 함.
 
-# submission = pd.DataFrame({
-#         "PassengerId": test["PassengerId"],
-#         "Survived": prediction
-#     })
+# R2 (알스퀘어) 결정계수
+# 통계학에서, 결정계수는 추정한 선형 모형이 주어진 자료에 적합한 정도를 재는 척도이다. 반응 변수의 변동량 중에서 적용한 모형으로 설명가능한 부분의 비율을 가리킨다. 결정계수의 통상적인 기호는 R2이다.
+from sklearn.metrics import r2_score
+r2_y_predict = r2_score(Y_Test,Y_predict)
+print("R2 : ", r2_y_predict)
 
-# submission.to_csv('submission.csv', index=False)
+Y_predict = Y_predict.reshape(-1)
+# print('Y_predict : ',Y_predict)
+for index, value in enumerate(Y_predict):
+    if  value < 0.5:
+        Y_predict[index] = 0
+    else :
+        Y_predict[index] = 1
+Y_predict = np.int64(Y_predict)
+    
+submission = pd.DataFrame({
+        "PassengerId": test["PassengerId"],
+        "Survived": Y_predict
+    })
 
-# submission = pd.read_csv('submission.csv')
-# submission.head()
+submission.to_csv('submission.csv', index=False)
+
+submission = pd.read_csv('submission.csv')
+submission.head()

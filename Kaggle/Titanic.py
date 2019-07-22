@@ -196,30 +196,6 @@ from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 k_fold = KFold(n_splits=10, shuffle=True, random_state=0)
 
-
-# -----------------------------------------
-
-# #2. 모델구성
-from keras.models import Sequential
-from keras.layers import Dense
-model = Sequential()
-
-model.add(Dense(200, input_dim=1, activation='relu'))
-model.add(Dense(3))
-model.add(Dense(100))
-model.add(Dense(4))
-model.add(Dense(1))
-
-#3. 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
-model.fit(train_data, y_train, epochs=30, batch_size=3)
-
-#4. 평가 예측
-loss, acc = model.evaluate(x_test, y_test, batch_size=1)
-print("acc : ", acc)
-
-
-
 clf = KNeighborsClassifier(n_neighbors = 13)
 scoring = 'accuracy'
 score = cross_val_score(clf, train_data, target, cv=k_fold, n_jobs=1, scoring=scoring)
@@ -258,19 +234,18 @@ print(score)
 # SVM Score
 print(round(np.mean(score)*100, 2))
 
-# clf = SVC()
-# clf.fit(train_data, target)
+clf = SVC()
+clf.fit(train_data, target)
 
-# test_data = test.drop("PassengerId", axis=1).copy()
-# prediction = clf.predict(test_data)
+test_data = test.drop("PassengerId", axis=1).copy()
+prediction = clf.predict(test_data)
 
-# submission = pd.DataFrame({
-#         "PassengerId": test["PassengerId"],
-#         "Survived": prediction
-#     })
+submission = pd.DataFrame({
+        "PassengerId": test["PassengerId"],
+        "Survived": prediction
+    })
 
-# submission.to_csv('submission.csv', index=False)
+submission.to_csv('submission.csv', index=False)
 
-# submission = pd.read_csv('submission.csv')
-# submission.head()
-
+submission = pd.read_csv('submission.csv')
+submission.head()

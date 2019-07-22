@@ -39,7 +39,7 @@ model.compile(loss='mse',optimizer='adam',metrics=['accuracy']) #기계어로 �
 # 정확도를 더 높이기 위한..!
 # 아래는 머신이 검사하는 데이터랑 사람이 검사하는 데이터랑 같기 때문에 값은 잘나오지만 다른 값을 넣었을 때 어떻게 될지 모름! 그렇기때문에 바꿔줘야해!
 # model.fit(x_train,y_train,epochs=2000,batch_size=2,validation_data=(x_test,y_test)) #epochs 훈련 횟수 batch_size 입력값을 몇개로 잘라서 넣을꺼니? 1<= N <= x.size() -> default = 32 
-model.fit(x_train,y_train,epochs=600,batch_size=2,validation_data=(x_validation,y_validation))
+model.fit(x_train,y_train,epochs=10,batch_size=2,validation_data=(x_validation,y_validation))
 # 입력 데이터 갯수 / batch_size * epochs = 총 작업 횟수
 #4. 평가 예측
 loss, acc = model.evaluate(x_test,y_test,batch_size=1) # loss 함수가 몇인지, 정확도가 몇인지.
@@ -49,6 +49,7 @@ print("loss : ",loss)
 y_predict = model.predict(x_test)
 print('y_predict : ',y_predict)
 
+print('y_predict : ',y_predict)
 #RMSE 구하기
 from sklearn.metrics import mean_squared_error
 def RMSE(y_test,y_predict):
