@@ -45,45 +45,30 @@ print(x_train)
 # 모델 구성하기
 model = Sequential()
 
-model.add(LSTM(32, input_shape=(4,1), return_sequences=True))
-model.add(LSTM(10, return_sequences=True))
-model.add(LSTM(10, return_sequences=True))
-model.add(LSTM(10, return_sequences=True))
-model.add(LSTM(10, return_sequences=True))
-model.add(LSTM(10, return_sequences=True))
-model.add(LSTM(10, return_sequences=True))
-model.add(LSTM(10, return_sequences=True))
-model.add(LSTM(10))
-
-
+model.add(LSTM(4, input_shape=(4,1), return_sequences=True))
+model.add(LSTM(8, return_sequences=True))
+model.add(LSTM(16, return_sequences=True))
+model.add(LSTM(6, return_sequences=True))
+model.add(LSTM(4))
 
 # model.add(Dropout(0.2))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(5, activation='relu'))
-
-
+model.add(Dense(20, activation='relu'))
+model.add(Dense(30, activation='relu'))
+model.add(Dense(10, activation='relu'))
 model.add(Dense(1))
-
-model.summary()
 
 model.compile(loss='mean_squared_error', optimizer='adam', metrics=['mse'])
 
-model.fit(x_train, y_train, epochs=500, batch_size=1, verbose=2)
+model.fit(x_train, y_train, epochs=300, batch_size=1, verbose=2)
+
+model.summary()
 
 loss, acc = model.evaluate(x_test, y_test)
 
 y_predict = model.predict(x_test)
-y_predict2 = model.predict(x_train)
+# y_predict2 = model.predict(x_train)
 
 print('loss : ', loss)
 print('acc : ', acc)
 print('y_predict(x_test) : \n', y_predict)
-print('y_predict2(x_train) : \n', y_predict2)
-
-print(a)
+# print('y_predict2(x_train) : \n', y_predict2)
