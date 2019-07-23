@@ -101,29 +101,38 @@ x_validation,x_train,y_validation,y_train = train_test_split(X,Y,test_size=0.4,r
 #2. 모델 구성
 from keras.layers import Dense, Dropout
 from keras.activations import softmax
+from keras.callbacks import EarlyStopping
 from keras.models import Sequential
 model = Sequential()
 
 # model.add(Dropout(0.25))
-model.add(Dense(400,input_shape =(X.shape[1],), activation = 'relu'))
-model.add(Dense(384, activation = 'relu'))
-model.add(Dense(397, activation = 'relu'))
-model.add(Dense(411, activation = 'relu'))
-model.add(Dense(313, activation = 'relu'))
-model.add(Dense(148, activation = 'relu'))
+#
+# model.add(Dense(400,input_shape =(X.shape[1],), activation = 'relu'))
+# model.add(Dense(384, activation = 'relu'))
+# model.add(Dense(397, activation = 'relu'))
+# model.add(Dense(411, activation = 'relu'))
+# model.add(Dense(313, activation = 'relu'))
+# model.add(Dense(240, activation = 'relu'))
+# model.add(Dense(1, activation = 'relu'))
+#
+model.add(Dense(20,input_shape =(X.shape[1],), activation = 'relu'))
+model.add(Dense(30, activation = 'relu'))
+model.add(Dense(32, activation = 'relu'))
+model.add(Dense(25, activation = 'relu'))
+model.add(Dense(15, activation = 'relu'))
 model.add(Dense(1, activation = 'relu'))
-
 #3. 훈련
+early_stopping_callback = EarlyStopping(monitor='val_acc', patience=200) # 트레이닝 하다가 200 이상 좋은 값이 안나오면 중단한다.
 model.compile(loss='mse',optimizer='adam',metrics=['accuracy'])
-model.fit(x_train,y_train,epochs=150,batch_size=7,validation_data=(x_validation,y_validation))
+model.fit(x_train,y_train,epochs=5000,batch_size=21,validation_data=(x_validation,y_validation),callbacks=[early_stopping_callback])
 
 #4. 평가 예측
 loss, acc = model.evaluate(X_Test,Y_Test,batch_size=1)
 print("acc : ",acc)
 print("loss : ",loss)
 
-Y_predict = model.predict(X_Test)
-# print('y_predict : ',y_predict)
+Y_predict = model.predict(X_Test).flatten()
+# print('y_predict : ',Y_predict)
 
 #RMSE 구하기
 from sklearn.metrics import mean_squared_error
@@ -137,15 +146,12 @@ from sklearn.metrics import r2_score
 r2_y_predict = r2_score(Y_Test,Y_predict)
 print("R2 : ", r2_y_predict)
 
-Y_predict = Y_predict.reshape(-1)
 # print('Y_predict : ',Y_predict)
 for index, value in enumerate(Y_predict):
-    if  value < 0.5:
-        Y_predict[index] = 0
-    else :
-        Y_predict[index] = 1
-Y_predict = np.int64(Y_predict)
-    
+    Y_predict[index] = round(value)
+    Y_predict = np.int64(Y_predict)
+
+print(Y_predict)
 submission = pd.DataFrame({
         "PassengerId": test["PassengerId"],
         "Survived": Y_predict
