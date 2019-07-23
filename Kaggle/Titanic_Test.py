@@ -106,21 +106,13 @@ from keras.models import Sequential
 model = Sequential()
 
 # model.add(Dropout(0.25))
-#
-# model.add(Dense(400,input_shape =(X.shape[1],), activation = 'relu'))
-# model.add(Dense(384, activation = 'relu'))
-# model.add(Dense(397, activation = 'relu'))
-# model.add(Dense(411, activation = 'relu'))
-# model.add(Dense(313, activation = 'relu'))
-# model.add(Dense(240, activation = 'relu'))
-# model.add(Dense(1, activation = 'relu'))
-#
 model.add(Dense(20,input_shape =(X.shape[1],), activation = 'relu'))
 model.add(Dense(30, activation = 'relu'))
 model.add(Dense(32, activation = 'relu'))
 model.add(Dense(25, activation = 'relu'))
 model.add(Dense(15, activation = 'relu'))
 model.add(Dense(1, activation = 'relu'))
+
 #3. 훈련
 early_stopping_callback = EarlyStopping(monitor='val_acc', patience=200) # 트레이닝 하다가 200 이상 좋은 값이 안나오면 중단한다.
 model.compile(loss='mse',optimizer='adam',metrics=['accuracy'])
@@ -132,7 +124,7 @@ print("acc : ",acc)
 print("loss : ",loss)
 
 Y_predict = model.predict(X_Test).flatten()
-# print('y_predict : ',Y_predict)
+print('y_predict : ',Y_predict)
 
 #RMSE 구하기
 from sklearn.metrics import mean_squared_error
@@ -146,15 +138,9 @@ from sklearn.metrics import r2_score
 r2_y_predict = r2_score(Y_Test,Y_predict)
 print("R2 : ", r2_y_predict)
 
-# print('Y_predict : ',Y_predict)
-for index, value in enumerate(Y_predict):
-    Y_predict[index] = round(value)
-    Y_predict = np.int64(Y_predict)
-
-print(Y_predict)
 submission = pd.DataFrame({
         "PassengerId": test["PassengerId"],
-        "Survived": Y_predict
+        "Survived": model.predict_classes(X_Test).flatten()
     })
 
 submission.to_csv('submission.csv', index=False)
