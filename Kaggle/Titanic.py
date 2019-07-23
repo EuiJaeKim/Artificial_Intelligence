@@ -146,6 +146,7 @@ cabin_mapping = {"A": 0, "B": 0.4, "C": 0.8, "D": 1.2, "E": 1.6, "F": 2, "G": 2.
 for dataset in train_test_data:
     dataset['Cabin'] = dataset['Cabin'].map(cabin_mapping)
 # NaN 값 채워주고
+
 train["Cabin"].fillna(train.groupby("Pclass")["Cabin"].transform("median"), inplace=True)
 test["Cabin"].fillna(test.groupby("Pclass")["Cabin"].transform("median"), inplace=True)
 
