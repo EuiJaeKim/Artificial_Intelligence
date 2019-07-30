@@ -15,7 +15,6 @@ model.add(MaxPooling2D(pool_size=2)) # 2x2씩 짤라보면서 총4개의 값중 
 
 model.add(Flatten()) # (None, 400) > 일렬로 데이터를 만듬. 이후부터는 그냥 dense로 처리.
 
-
 # Layer (type)                 Output Shape              Param #
 # =================================================================
 # conv2d_1 (Conv2D)            (None, 7, 7, 16)          160    > 16,(3,3),(7,7,1)  16 * ((3*3)+1)  = 160
@@ -25,7 +24,6 @@ model.add(Flatten()) # (None, 400) > 일렬로 데이터를 만듬. 이후부터
 # conv2d_3 (Conv2D)            (None, 4, 4, 100)         14500 > 100,(3,3),(6,6,16)      ((16*(3*3))+1) * 100 =  14500
 
 # Param 계산법 : ((이전층 출력갯수 * 지금필터갯수) + bias) * 지금층의 출력갯수
-
 
 # model.add(Dense(128,  activation='relu'))
 # model.add(Dropout(0.5))
