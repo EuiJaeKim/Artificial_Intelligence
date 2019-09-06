@@ -15,7 +15,6 @@ print("X.shape : ",X.shape) # 4, 3, 1
 print("Y.shape : ",Y.shape) # 4,
 min = 10
 
-
 def Add(LayerCount):
     global min,X,Y
     if LayerCount == 0 :

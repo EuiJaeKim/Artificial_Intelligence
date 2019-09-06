@@ -2,11 +2,12 @@
 import tkinter.font as tkf
 import tkinter as tk
 import numpy as np
-import cv2
-import RPi.GPIO as GPIO
+# import cv2
+# import RPi.GPIO as GPIO
+# import time
 from time import sleep
-import datetime
 import multiprocessing
+from multiprocessing.sharedctypes import Array
 import os
 from PIL import Image, ImageTk
 
@@ -23,17 +24,16 @@ OneCycle = int(360 / StepAngle)
 OneMM = 51
 X = multiprocessing.Value('i', 0)
 Y = multiprocessing.Value('i', 0)
-N = multiprocessing.Value('i', 0)
 OnColor = '#0000FF'
 OffColor = '#14325c'
 # GPIO Area
-GPIO.setmode(GPIO.BOARD)
-GPIO.setwarnings(False)
-for val in ActuatorDirs:
-        GPIO.setup(val, GPIO.OUT)
-for val in ActuatorPuls:
-        GPIO.setup(val, GPIO.OUT)
- # self.output_path = /home/pi/Pictures
+# GPIO.setmode(GPIO.BOARD)
+# GPIO.setwarnings(False)
+# for val in ActuatorDirs:
+#         GPIO.setup(val, GPIO.OUT)
+# for val in ActuatorPuls:
+#         GPIO.setup(val, GPIO.OUT)
+
 # Class Area
 class SMTNC001(tk.Tk):
     def __init__(self):
@@ -42,49 +42,20 @@ class SMTNC001(tk.Tk):
         tk.Tk.geometry(self,"800x410+0+0")
         tk.Tk.resizable(self,False,False)
 
-        self.output_path = '/home/pi/Saved_Data/'
-        self.current_image = None
-
         # ----- frame -----
-        self.left_frame = tk.Frame(self, borderwidth=5, relief=tk.RIDGE, height=450, width=500)
-        self.vs = cv2.VideoCapture(0)
-        self.width = self.vs.get(cv2.CAP_PROP_FRAME_WIDTH)
-        self.height = self.vs.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        self.size = (300, 450)
-        self.lmain = tk.Label(self.left_frame)
-        self.lmain.pack()
-        self.video_loop()
+        self.left_frame = tk.Frame(self, background="white", borderwidth=5, relief=tk.RIDGE, height=450, width=500)
+        label1 = tk.Label(self.left_frame,text = 'Number of Windows')
+        label1.pack()
         self.left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.YES)
+        
+        #Capture video frames
+        # self.lmain = tk.Label(self.left_frame)
+        # self.vs = cv2.VideoCapture(0)
+        # self.cap = cv2.VideoCapture(0)
 
         self.right_frame = tk.Frame(self, background="white", borderwidth=5, relief=tk.RIDGE, height=450, width=300)
         self.right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=tk.YES)
         self.Button_init()
-    def video_loop(self):
-        ok, frame = self.vs.read()  # read frame from video stream
-        if N.value == 1:
-            print("N.value is 1")
-            ts = datetime.datetime.now()
-            filename = "Vedio/{}.avi".format(ts.strftime("%Y-%m-%d-%H-%M-%S"))
-            p = os.path.join(self.output_path, filename)
-            width = self.vs.get(cv2.CAP_PROP_FRAME_WIDTH)
-            height = self.vs.get(cv2.CAP_PROP_FRAME_HEIGHT)
-            size = (int(width), int(height))
-            self.out = cv2.VideoWriter(p, cv2.VideoWriter_fourcc(*'DIVX'), 10.0, size)
-            N.value == 2
-        elif N.value == 3:
-            print("N.value is 3")
-            self.out.write(frame)
-        elif N.value == 4:
-            self.out.release()
-            N.value = 0
-        frame = cv2.resize(frame,(450,300))
-        frame = cv2.flip(frame, 1)
-        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)  # convert colors from BGR to RGBA
-        self.current_image = Image.fromarray(cv2image)  # convert image for PIL
-        imgtk = ImageTk.PhotoImage(image=self.current_image)  # convert image for tkinter
-        self.lmain.imgtk = imgtk  # anchor imgtk so it does not be deleted by garbage-collector
-        self.lmain.configure(image=imgtk)  # show the image
-        self.lmain.after(20, self.video_loop)  # call the same function after 30 milliseconds
     def Button_init(self):
         self.ButtonSize = 45
         self.ButtonFontSize = 13
@@ -145,7 +116,7 @@ class SMTNC001(tk.Tk):
         self.ButtonList.append(self.B24)
         
         self.BAuto = tk.Button(self.right_frame, text="Auto", font = tkf.Font(family="Helvetica", size=20), command=self.BAuto_click_event)
-        self.BCapture = tk.Button(self.right_frame, text="Capture", font = tkf.Font(family="Helvetica", size=17), command=self.BCapture_click_event) # take_snapshot
+        self.BCapture = tk.Button(self.right_frame, text="Capture", font = tkf.Font(family="Helvetica", size=17), command=self.BCapture_click_event)
         self.BReset = tk.Button(self.right_frame, text="Reset", font = tkf.Font(family="Helvetica", size=20) , command=self.BReset_click_event)
         self.BReset.configure(background="red")
 
@@ -340,16 +311,15 @@ class SMTNC001(tk.Tk):
         worker_1.start()
         worker_2.start()
     def BAuto_click_event(self):
+        print("24PBAuto")
         # 녹화 시작.
-        N.value = 1
-        worker_1 = multiprocessing.Process(target=Auto_Move, args=(N,))
+        print(tk.DISABLED)
+        worker_1 = multiprocessing.Process(target=CM402Auto_Move)
         worker_1.start()
+        print(tk.DISABLED)
     def BCapture_click_event(self):
-        ts = datetime.datetime.now() 
-        filename = "Picture/{}.jpg".format(ts.strftime("%Y-%m-%d_%H-%M-%S")) 
-        p = os.path.join(self.output_path, filename)
-        self.current_image.save(p, "JPEG")
-        print("[INFO] saved {}".format(filename))
+        print("24PBCapture")
+        pass
     def BReset_click_event(self):
         print("24PBReset")
         pass
@@ -403,80 +373,92 @@ class SMTNC001(tk.Tk):
             
         # self.master.switch_frame(ASM1000)
 
-def Auto_Move(num):
-    if X.value != 0 or Y.value != 0:
-        worker_1 = multiprocessing.Process(target=MoveX, args=(X,0))
-        worker_2 = multiprocessing.Process(target=MoveY, args=(Y,0))
-        worker_1.start()
-        worker_2.start()
+    # def switch_frame(self, frame_class):
+    #     frame_class(self)
+    # def show_frame(self):
+    #     이게 그냥 돌아가고, 동영상이랑 캡쳐는 frame 가져오면 될듯.
+    #     _, frame = self.cap.read()
+    #     frame = cv2.resize(frame,(450,300))
+    #     frame = cv2.flip(frame, 1)
+    #     cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+    #     img = Image.fromarray(cv2image)
+    #     imgtk = ImageTk.PhotoImage(image=img)
+    #     self.lmain.imgtk = imgtk
+    #     self.lmain.configure(image=imgtk)
+    #     self.lmain.after(10, show_frame) 
 
-        worker_1.join()
-        worker_2.join()
-    if N.value != 2 :
-         sleep(0.5)
-    num.value = 3
-    sleep(1)
-    
-    for i in range(4):
-        x = i
-        for j in range(6):
-            y = j
-            worker_1 = multiprocessing.Process(target=MoveX, args=(X,x))
-            worker_2 = multiprocessing.Process(target=MoveY, args=(Y,y))
-            worker_1.start()
-            worker_2.start()
+class PageOne(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
 
-            worker_1.join()
-            worker_2.join()
-            sleep(1)
-    num.value = 4
-    sleep(1)
-    worker_1 = multiprocessing.Process(target=MoveX, args=(X,0))
-    worker_2 = multiprocessing.Process(target=MoveY, args=(Y,0))
-    worker_1.start()
-    worker_2.start()
+        page_1_label = tk.Label(self, text="This is page one")
+        start_button = tk.Button(self, text="Return to start page",
+                                 command=lambda: master.switch_frame(CM402))
+        page_1_label.pack(side="top", fill="x", pady=10)
+        start_button.pack()
 
-    worker_1.join()
-    worker_2.join()
+def CM402Auto_Move():
+    sleep(5)
+    Auto_Move()
+
+def Auto_Move():
+    print("Auto_Move들어옴")
+            # for i in range(4):
+            #     x = i
+            #     for j in range(6):
+            #         y = j
+            #         worker_1 = multiprocessing.Process(target=MoveX, args=(X,x))
+            #         worker_2 = multiprocessing.Process(target=MoveY, args=(Y,y))
+            #         worker_1.start()
+            #         worker_2.start()
+
+            #         worker_1.join()
+            #         worker_2.join()
+            #         time.sleep(1)
+            # worker_1 = multiprocessing.Process(target=MoveX, args=(X,0))
+            # worker_2 = multiprocessing.Process(target=MoveY, args=(Y,0))
+            # worker_1.start()
+            # worker_2.start()
+
+            # worker_1.join()
+            # worker_2.join()
 def MoveX(X,GoalX):
-    DirX = X.value - PointX[GoalX]
-    X.value = PointX[GoalX]
-    if DirX < 0:
-        GPIO.output(ActuatorDirs[0], GPIO.LOW)
-        for i in range (int(abs(DirX))):
-            GPIO.output(ActuatorPuls[0], GPIO.HIGH)
-            sleep(Speed)
-            GPIO.output(ActuatorPuls[0], GPIO.LOW)
-            sleep(Speed)
-    elif DirX > 0:
-        GPIO.output(ActuatorDirs[0], GPIO.HIGH)
-        for i in range (int(abs(DirX))):
-            GPIO.output(ActuatorPuls[0], GPIO.HIGH)
-            sleep(Speed)
-            GPIO.output(ActuatorPuls[0], GPIO.LOW)
-            sleep(Speed)
+    print("MoveX들어옴")
+    # DirX = X.value - PointX[GoalX]
+    # X.value = PointX[GoalX]
+    # if DirX < 0:
+    #     GPIO.output(ActuatorDirs[0], GPIO.LOW)
+    #     for i in range (int(abs(DirX))):
+    #         GPIO.output(ActuatorPuls[0], GPIO.HIGH)
+    #         time.sleep(Speed)
+    #         GPIO.output(ActuatorPuls[0], GPIO.LOW)
+    #         time.sleep(Speed)
+    # elif DirX > 0:
+    #     GPIO.output(ActuatorDirs[0], GPIO.HIGH)
+    #     for i in range (int(abs(DirX))):
+    #         GPIO.output(ActuatorPuls[0], GPIO.HIGH)
+    #         time.sleep(Speed)
+    #         GPIO.output(ActuatorPuls[0], GPIO.LOW)
+    #         time.sleep(Speed)
 def MoveY(Y,GoalY):
-    DirY = Y.value - PointY[GoalY]
-    Y.value = PointY[GoalY]
-    if DirY < 0:
-        GPIO.output(ActuatorDirs[1], GPIO.LOW)
-        for i in range (int(abs(DirY))):
-            GPIO.output(ActuatorPuls[1], GPIO.HIGH)
-            sleep(Speed)
-            GPIO.output(ActuatorPuls[1], GPIO.LOW)
-            sleep(Speed)
-    elif DirY > 0:
-        GPIO.output(ActuatorDirs[1], GPIO.HIGH)
-        for i in range (int(abs(DirY))):
-            GPIO.output(ActuatorPuls[1], GPIO.HIGH)
-            sleep(Speed)
-            GPIO.output(ActuatorPuls[1], GPIO.LOW)
-            sleep(Speed)
+    print("MoveY들어옴")
+    # DirY = Y.value - PointY[GoalY]
+    # Y.value = PointY[GoalY]
+    # if DirY < 0:
+    #     GPIO.output(ActuatorDirs[1], GPIO.LOW)
+    #     for i in range (int(abs(DirY))):
+    #         GPIO.output(ActuatorPuls[1], GPIO.HIGH)
+    #         time.sleep(Speed)
+    #         GPIO.output(ActuatorPuls[1], GPIO.LOW)
+    #         time.sleep(Speed)
+    # elif DirY > 0:
+    #     GPIO.output(ActuatorDirs[1], GPIO.HIGH)
+    #     for i in range (int(abs(DirY))):
+    #         GPIO.output(ActuatorPuls[1], GPIO.HIGH)
+    #         time.sleep(Speed)
+    #         GPIO.output(ActuatorPuls[1], GPIO.LOW)
+    #         time.sleep(Speed)
 
 if __name__ == "__main__":
-    for i in range(1,4):
-        PointX.append(PointX[i-1]+2180)
-    for i in range(1,6):
-        PointY.append(PointY[i-1]+1495)
     app = SMTNC001()
     app.mainloop()
