@@ -42,6 +42,7 @@ def Add(LayerCount):
 
 if __name__=='__main__':
     #2 모델 구성
+    
     for i in range(1,11):
         model = Sequential()
         model.add(LSTM(20,activation='relu',input_shape=(X.shape[1],X.shape[2]),return_sequences=True)) # input_shape=(3,1) > 3열에 대해 1개씩 한다.
