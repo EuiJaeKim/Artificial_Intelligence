@@ -42,8 +42,8 @@ model.add(Dense(y.shape[1]))
 model.summary()
 
 model.compile(loss='mse',optimizer='adam',metrics=['accuracy'])
-model.fit(x_train,y_train,epochs=1100,batch_size=2)
-# model.fit(x_train,y_train,epochs=1100,batch_size=2,validation_data=(x_validation,y_validation))
+# model.fit(x_train,y_train,epochs=1100,batch_size=2)
+model.fit(x_train,y_train,epochs=1100,batch_size=2,validation_data=(x_validation,y_validation))
 
 loss, acc = model.evaluate(x_test,y_test,batch_size=1)
 print("acc : ",acc)
