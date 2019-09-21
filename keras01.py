@@ -1,5 +1,7 @@
 #1. 데이터 
 import numpy as np
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
 x = np.array([1,2,3,4])
 y = np.array([1,2,3,4])
 
@@ -7,7 +9,6 @@ y = np.array([1,2,3,4])
 from keras.layers import Dense
 from keras.models import Sequential
 model = Sequential()
-
 model.add(Dense(300,input_dim = 1, activation = 'relu'))
 model.add(Dense(586))
 model.add(Dense(1947))

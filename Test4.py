@@ -61,10 +61,12 @@ class SMTNC001(tk.Tk):
         self.ButtonFontSize = 13
         self.ButtonList = []
 
-        self.B12P = tk.Button(self.right_frame, text="12P", font = tkf.Font(family="Helvetica", size=20), command=self.Switch)
+        self.B12P = tk.Button(self.right_frame, text="12P", font = tkf.Font(family="Helvetica", size=20), command=self.B12PSwitch)
         self.B12P.configure(background=OffColor)
-        self.B24P = tk.Button(self.right_frame, text="24P", font = tkf.Font(family="Helvetica", size=20), command=self.Switch)
+        self.B24P = tk.Button(self.right_frame, text="24P", font = tkf.Font(family="Helvetica", size=20), command=self.B24PSwitch)
         self.B24P.configure(background=OnColor)
+        self.BManual = tk.Button(self.right_frame, text="M", font = tkf.Font(family="Helvetica", size=20), command=self.BMSwitch)
+        self.BManual.configure(background='yellow')
 
         self.B1 = tk.Button(self.right_frame, text="1", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B1_click_event)
         self.ButtonList.append(self.B1)
@@ -122,6 +124,7 @@ class SMTNC001(tk.Tk):
 
         self.B12P.pack()
         self.B24P.pack()
+        self.BManual.pack()
         for val in self.ButtonList:
             val.pack()
         self.BAuto.pack()
@@ -136,8 +139,9 @@ class SMTNC001(tk.Tk):
             val.place(x=X, y=Y, width=self.ButtonSize, height=self.ButtonSize)
             X += self.ButtonSize
         X = 10
-        self.B12P.place(x=X,y=10, width=self.ButtonSize*2, height=self.ButtonSize*2)
-        self.B24P.place(x=self.ButtonSize*2+20,y=10, width=self.ButtonSize*2, height=self.ButtonSize*2)
+        self.B12P.place(x=X,y=10, width=self.ButtonSize*1.5, height=self.ButtonSize*1.5)
+        self.B24P.place(x=self.ButtonSize*1.5+20,y=10, width=self.ButtonSize*1.5, height=self.ButtonSize*1.5)
+        self.BManual.place(x=self.ButtonSize*3+30,y=10, width=self.ButtonSize*1.5, height=self.ButtonSize*1.5)
         self.B24P.config(state=tk.DISABLED)
         self.BAuto.place(x=X, y=Y + self.ButtonSize + 10, width=self.ButtonSize*2, height=self.ButtonSize*2)
         self.BCapture.place(x=X+self.ButtonSize*2, y=Y + self.ButtonSize + 10, width=self.ButtonSize*2, height=self.ButtonSize*2)
@@ -323,17 +327,83 @@ class SMTNC001(tk.Tk):
     def BReset_click_event(self):
         print("24PBReset")
         pass
-    def Switch(self):
-        if self.B24P['state'] == 'disabled':
-            self.B24P.config(state=tk.NORMAL)
-            self.B12P.config(state=tk.DISABLED)
-            for _,val in enumerate(self.ButtonList[12:]):
+    def B24PSwitch(self):
+        self.B24P.configure(background=OnColor)
+        if self.BManual['state'] == 'disabled':
+            self.B24P.config(state=tk.DISABLED)
+            self.BManual.config(state=tk.NORMAL)
+            self.BAuto.config(state=tk.NORMAL)
+            for _,val in enumerate(self.ButtonList):
                 val.destroy()
-            del self.ButtonList[12:]
-        else:
+            del self.ButtonList[:]
+
+            self.B1 = tk.Button(self.right_frame, text="1", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B1_click_event)
+            self.ButtonList.append(self.B1)
+            self.B2 = tk.Button(self.right_frame, text="2", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B2_click_event)
+            self.ButtonList.append(self.B2)
+            self.B3 = tk.Button(self.right_frame, text="3", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B3_click_event)
+            self.ButtonList.append(self.B3)
+            self.B4 = tk.Button(self.right_frame, text="4", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B4_click_event)
+            self.ButtonList.append(self.B4)
+            self.B5 = tk.Button(self.right_frame, text="5", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B5_click_event)
+            self.ButtonList.append(self.B5)
+            self.B6 = tk.Button(self.right_frame, text="6", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B6_click_event)
+            self.ButtonList.append(self.B6)
+            self.B7 = tk.Button(self.right_frame, text="7", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B7_click_event)
+            self.ButtonList.append(self.B7)
+            self.B8 = tk.Button(self.right_frame, text="8", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B8_click_event)
+            self.ButtonList.append(self.B8)
+            self.B9 = tk.Button(self.right_frame, text="9", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B9_click_event)
+            self.ButtonList.append(self.B9)
+            self.B10 = tk.Button(self.right_frame, text="10", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B10_click_event)
+            self.ButtonList.append(self.B10)
+            self.B11 = tk.Button(self.right_frame, text="11", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B11_click_event)
+            self.ButtonList.append(self.B11)
+            self.B12 = tk.Button(self.right_frame, text="12", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B12_click_event)
+            self.ButtonList.append(self.B12)
+            self.B13 = tk.Button(self.right_frame, text="13", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B13_click_event)
+            self.ButtonList.append(self.B13)
+            self.B14 = tk.Button(self.right_frame, text="14", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B14_click_event)
+            self.ButtonList.append(self.B14)
+            self.B15 = tk.Button(self.right_frame, text="15", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B15_click_event)
+            self.ButtonList.append(self.B15)
+            self.B16 = tk.Button(self.right_frame, text="16", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B16_click_event)
+            self.ButtonList.append(self.B16)
+            self.B17 = tk.Button(self.right_frame, text="17", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B17_click_event)
+            self.ButtonList.append(self.B17)
+            self.B18 = tk.Button(self.right_frame, text="18", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B18_click_event)
+            self.ButtonList.append(self.B18)
+            self.B19 = tk.Button(self.right_frame, text="19", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B19_click_event)
+            self.ButtonList.append(self.B19)
+            self.B20 = tk.Button(self.right_frame, text="20", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B20_click_event)
+            self.ButtonList.append(self.B20)
+            self.B21 = tk.Button(self.right_frame, text="21", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B21_click_event)
+            self.ButtonList.append(self.B21)
+            self.B22 = tk.Button(self.right_frame, text="22", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B22_click_event)
+            self.ButtonList.append(self.B22)
+            self.B23 = tk.Button(self.right_frame, text="23", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B23_click_event)
+            self.ButtonList.append(self.B23)
+            self.B24 = tk.Button(self.right_frame, text="24", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B24_click_event)
+            self.ButtonList.append(self.B24)
+
+            for _,val in enumerate(self.ButtonList):
+                val.pack()
+
+            X = 10
+            Y = 70
+            for i, val in enumerate(self.ButtonList):
+                if i % 6 == 0 :
+                    X = 10
+                    Y += self.ButtonSize
+                val.place(x=X, y=Y, width=self.ButtonSize, height=self.ButtonSize)
+                X += self.ButtonSize
+        elif self.B12P['state'] == 'disabled':
+            self.B12P.configure(background=OffColor)
             self.B12P.config(state=tk.NORMAL)
             self.B24P.config(state=tk.DISABLED)
-            
+            # worker_1 = multiprocessing.Process(target=SwitchMove12P())
+            # worker_1.start()
+
             self.B13 = tk.Button(self.right_frame, text="13", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B13_click_event)
             self.ButtonList.append(self.B13)
             self.B14 = tk.Button(self.right_frame, text="14", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B14_click_event)
@@ -370,22 +440,98 @@ class SMTNC001(tk.Tk):
                     Y += self.ButtonSize
                 val.place(x=X, y=Y, width=self.ButtonSize, height=self.ButtonSize)
                 X += self.ButtonSize
-            
-        # self.master.switch_frame(ASM1000)
+    def B12PSwitch(self):
+        self.B12P.configure(background=OnColor)
+        if self.BManual['state'] == 'disabled':
+            self.B12P.config(state=tk.DISABLED)
+            self.BManual.config(state=tk.NORMAL)
+            self.BAuto.config(state=tk.NORMAL)
+            for _,val in enumerate(self.ButtonList):
+                val.destroy()
+            del self.ButtonList[:]
 
-    # def switch_frame(self, frame_class):
-    #     frame_class(self)
-    # def show_frame(self):
-    #     이게 그냥 돌아가고, 동영상이랑 캡쳐는 frame 가져오면 될듯.
-    #     _, frame = self.cap.read()
-    #     frame = cv2.resize(frame,(450,300))
-    #     frame = cv2.flip(frame, 1)
-    #     cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-    #     img = Image.fromarray(cv2image)
-    #     imgtk = ImageTk.PhotoImage(image=img)
-    #     self.lmain.imgtk = imgtk
-    #     self.lmain.configure(image=imgtk)
-    #     self.lmain.after(10, show_frame) 
+            self.B1 = tk.Button(self.right_frame, text="1", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B1_click_event)
+            self.ButtonList.append(self.B1)
+            self.B2 = tk.Button(self.right_frame, text="2", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B2_click_event)
+            self.ButtonList.append(self.B2)
+            self.B3 = tk.Button(self.right_frame, text="3", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B3_click_event)
+            self.ButtonList.append(self.B3)
+            self.B4 = tk.Button(self.right_frame, text="4", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B4_click_event)
+            self.ButtonList.append(self.B4)
+            self.B5 = tk.Button(self.right_frame, text="5", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B5_click_event)
+            self.ButtonList.append(self.B5)
+            self.B6 = tk.Button(self.right_frame, text="6", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B6_click_event)
+            self.ButtonList.append(self.B6)
+            self.B7 = tk.Button(self.right_frame, text="7", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B7_click_event)
+            self.ButtonList.append(self.B7)
+            self.B8 = tk.Button(self.right_frame, text="8", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B8_click_event)
+            self.ButtonList.append(self.B8)
+            self.B9 = tk.Button(self.right_frame, text="9", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B9_click_event)
+            self.ButtonList.append(self.B9)
+            self.B10 = tk.Button(self.right_frame, text="10", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B10_click_event)
+            self.ButtonList.append(self.B10)
+            self.B11 = tk.Button(self.right_frame, text="11", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B11_click_event)
+            self.ButtonList.append(self.B11)
+            self.B12 = tk.Button(self.right_frame, text="12", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.B12_click_event)
+            self.ButtonList.append(self.B12)
+
+            for _,val in enumerate(self.ButtonList):
+                val.pack()
+
+            X = 10
+            Y = 70
+            for i, val in enumerate(self.ButtonList):
+                if i % 6 == 0 :
+                    X = 10
+                    Y += self.ButtonSize
+                val.place(x=X, y=Y, width=self.ButtonSize, height=self.ButtonSize)
+                X += self.ButtonSize
+        elif self.B24P['state'] == 'disabled':
+            self.B24P.configure(background=OffColor)
+            self.B24P.config(state=tk.NORMAL)
+            self.B12P.config(state=tk.DISABLED)
+            for _,val in enumerate(self.ButtonList[12:]):
+                val.destroy()
+            del self.ButtonList[12:]
+            # worker_1 = multiprocessing.Process(target=SwitchMove24P())
+            # worker_1.start()
+    def BMSwitch(self):
+        self.B24P.config(state=tk.NORMAL)
+        self.B24P.configure(background=OffColor)
+        self.B12P.config(state=tk.NORMAL)
+        self.B12P.configure(background=OffColor)
+        self.BManual.config(state=tk.DISABLED)
+        self.BAuto.config(state=tk.DISABLED)
+        for _,val in enumerate(self.ButtonList):
+            val.destroy()
+        del self.ButtonList[:]
+        self.BUp = tk.Button(self.right_frame, text="▲", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.BUp_click_event)
+        self.ButtonList.append(self.BUp)
+        self.BLeft = tk.Button(self.right_frame, text="◀", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.BLeft_click_event)
+        self.ButtonList.append(self.BLeft)
+        self.BRight = tk.Button(self.right_frame, text="▶", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.BRight_click_event)
+        self.ButtonList.append(self.BRight)
+        self.BDown = tk.Button(self.right_frame, text="▼", font = tkf.Font(family="Helvetica", size=self.ButtonFontSize), command=self.BDown_click_event)
+        self.ButtonList.append(self.BDown)
+
+        for _,val in enumerate(self.ButtonList):
+            val.pack()
+        self.BUp.place(x=80, y=100, width=self.ButtonSize, height=self.ButtonSize)
+        self.BLeft.place(x=35, y=145, width=self.ButtonSize, height=self.ButtonSize)
+        self.BRight.place(x=125, y=145, width=self.ButtonSize, height=self.ButtonSize)
+        self.BDown.place(x=80, y=190, width=self.ButtonSize, height=self.ButtonSize)
+    def BUp_click_event(self):
+        worker_1 = multiprocessing.Process(target=Move_Up)
+        worker_1.start()
+    def BLeft_click_event(self):
+        worker_1 = multiprocessing.Process(target=Move_Left)
+        worker_1.start()
+    def BRight_click_event(self):
+        worker_1 = multiprocessing.Process(target=Move_Right)
+        worker_1.start()
+    def BDown_click_event(self):
+        worker_1 = multiprocessing.Process(target=Move_Down)
+        worker_1.start()
 
 class PageOne(tk.Frame):
     def __init__(self, master):
@@ -459,6 +605,38 @@ def MoveY(Y,GoalY):
     #         GPIO.output(ActuatorPuls[1], GPIO.LOW)
     #         time.sleep(Speed)
 
+def Move_Up():
+    X.value = X.value - 10
+    GPIO.output(ActuatorDirs[0], GPIO.HIGH)
+    for i in range (10):
+        GPIO.output(ActuatorPuls[0], GPIO.HIGH)
+        sleep(Speed)
+        GPIO.output(ActuatorPuls[0], GPIO.LOW)
+        sleep(Speed)
+def Move_Left():
+    Y.value = Y.value - 10
+    GPIO.output(ActuatorDirs[1], GPIO.LOW)
+    for i in range (10):
+        GPIO.output(ActuatorPuls[1], GPIO.HIGH)
+        sleep(Speed)
+        GPIO.output(ActuatorPuls[1], GPIO.LOW)
+        sleep(Speed)
+def Move_Right():
+    Y.value = Y.value + 10
+    GPIO.output(ActuatorDirs[1], GPIO.HIGH)
+    for i in range (10):
+        GPIO.output(ActuatorPuls[1], GPIO.HIGH)
+        sleep(Speed)
+        GPIO.output(ActuatorPuls[1], GPIO.LOW)
+        sleep(Speed)
+def Move_Down():
+    X.value = X.value + 10
+    GPIO.output(ActuatorDirs[0], GPIO.LOW)
+    for i in range (10):
+        GPIO.output(ActuatorPuls[0], GPIO.HIGH)
+        sleep(Speed)
+        GPIO.output(ActuatorPuls[0], GPIO.LOW)
+        sleep(Speed)
 if __name__ == "__main__":
     app = SMTNC001()
     app.mainloop()
